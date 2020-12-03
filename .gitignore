@@ -7,6 +7,8 @@ __pycache__/
 # CSV
 *.csv
 *.pkl
+*.DS_Store
+
 # C extensions
 *.so
 
