@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-plt.rcParams.update({'font.size': 16, 'font.family': 'sans'})
+plt.rcParams.update({'font.size': 18, 'font.family': 'sans'})
 plt.style.use('ggplot')
 
 
