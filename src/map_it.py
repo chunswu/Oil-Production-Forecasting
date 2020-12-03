@@ -1,9 +1,11 @@
 from functions import *
 import plotly.express as px
-
+import pyspark as ps
+from pyspark.sql.types import *
+from pyspark.sql.functions import struct, col, when, lit
 
 def make_map(string_label, pd_df):
-    '''
+    '''Create a map where oil wells are located with oil production information
     Parameters
     ----------
     string_label: string
