@@ -1,5 +1,6 @@
 import numpy as np
-
+from pyspark.sql.types import *
+from pyspark.sql.functions import struct, col, when, lit
 
 def drop_na_column(df, lst):
     '''Removes rows with null or n/a values from a dataframe
