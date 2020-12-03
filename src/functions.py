@@ -1,6 +1,3 @@
-import pyspark as ps
-from pyspark.sql.types import *
-from pyspark.sql.functions import struct, col, when, lit
 import numpy as np
 
 
@@ -77,23 +74,3 @@ def clean_fluid_type(df, fluid_sys):
         df = df.withColumn(lowcase_fluid, col(lowcase_fluid) + col(fluid_sys.lower()+str(i)))
 
     return df
-
-if __name__ == '__main__':
-
-    spark = (ps.sql.SparkSession.builder 
-        .master("local[4]") 
-        .appName("sparkSQL exercise") 
-        .getOrCreate()
-        )
-    sc = spark.sparkContext
-
-    df = spark.read.csv('../data/dj_basin.csv',
-                         header=True,
-                         quote='"',
-                         sep=",",
-                         inferSchema=True)
-
-    df.printSchema()
-    print(df.count())
-
-    df.createOrReplaceTempView("data")
