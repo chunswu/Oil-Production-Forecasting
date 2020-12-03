@@ -3,7 +3,7 @@ from pyspark.sql.types import *
 from pyspark.sql.functions import struct, col, when, lit
 from pandas_profiling import ProfileReport
 import pandas as pd
-import numpy as np
+import pickle
 
 def clean_data(data):
     '''Cleans the fluid types from a spark DataFrame
@@ -106,7 +106,6 @@ if __name__ == '__main__':
                     SELECT
                         api,
                         State,
-                        TotalCleanVol,
                         FluidVol1,
                         UPPER(FluidType1) AS fluid_type1,
                         FluidVol2,
@@ -125,17 +124,39 @@ if __name__ == '__main__':
                             api,
                             Latitude, 
                             Longitude,
-                            UPPER(formation) AS formation, 
-                            Prod180DayOil AS day180,
-                            Prod365DayOil AS day365,
-                            Prod545DayOil AS day545,
-                            Prod730DayOil AS day730,
-                            Prod1095DayOil AS day1095,
-                            Prod1460DayOil AS day1460,
-                            Prod1825DayOil AS day1825,
-                            TotalProppant
+                            UPPER(formation) AS formation,
+                            TotalProppant,
+                            Prod180DayOil AS day180
                         FROM data
                         """)
+
+                            # Prod365DayOil AS day365,
+                            # Prod545DayOil AS day545,
+                            # Prod730DayOil AS day730,
+                            # Prod1095DayOil AS day1095,
+                            # Prod1460DayOil AS day1460,
+                            # Prod1825DayOil AS day1825,
+
+    fluid_data = clean_data(fluid_data)
+    final_set = finished_form(fluid_data, parameter_data)
+
+    formation_seperate = ['NIOBRARA', 'CODELL']
+    state_seperate = ['COLORADO']
+
+    for layers in formation_seperate:
+        final_set = column_expand(final_set, 'formation', layers)
+
+    for state in state_seperate:
+        final_set = column_expand(final_set, 'State', state)
+
+    final_set = final_set.drop(columns=['formation'])
+    final_set = final_set.drop(columns=['State'])
+    final_set = final_set.dropna()
+    final_set = final_set.set_index('api')
+    final_set.rename(columns={'TotalProppant': 'Total Proppant'}, inplace=True)
+
+    with open('../model/rf_data.pkl', 'wb') as data_file:
+        pickle.dump(final_set, data_file)
 
     # fluid_data = clean_data(fluid_data)
     # final_set = finished_form(fluid_data, parameter_data)
