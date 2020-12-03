@@ -1,4 +1,4 @@
-from functions import *
+# from functions import *
 # from pipeline import *
 from ploty import *
 # from pyspark.sql.types import *
@@ -105,7 +105,7 @@ if __name__ == '__main__':
                                                         random_state = 1)
     
 
-    # find_estimators()
+    find_estimators()
 
     randomForest = RandomForestRegressor(n_estimators=350,
                                          n_jobs=-1,
