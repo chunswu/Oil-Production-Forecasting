@@ -27,7 +27,7 @@ Was able to obtain a redacted data of unconventional oil wells in the Denver-Jul
 
 Found 12 wells that are not in the two most targeted formations, so those 12 wells were removed from the data set. On 180-day production mark the data has 502 wells that have not been recorded as of this time.
 
-<div align="center"><img src="images/correlation_plot.png" height=386 width=490></div>
+<div align="center"><img src="images/correlation_plot.png" height=483 width=613></div>
 
 Using the Pearson’s R correlations plot, there is no correlation for location (latitude and longitude) which is quite odd due to common sense; we know oil isn’t everywhere and oil is only at certain locations in the world.
 
