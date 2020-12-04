@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.inspection import plot_partial_dependence    
 
-plt.rcParams.update({'font.size': 18})
+plt.rcParams.update({'font.size': 28})
 
 if __name__ == '__main__':
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     fig.tight_layout()
     plt.savefig('../images/feature_importance_rf.png')
 
-    fig, ax = plt.subplots(figsize=(28, 10))
+    fig, ax = plt.subplots(figsize=(30, 15))
     plot_partial_dependence(randomForest, final_set, 
                             features[:number_features], 
                             line_kw={"c": "seagreen"},

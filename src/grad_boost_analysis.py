@@ -53,7 +53,7 @@ if __name__ == '__main__':
     fig.tight_layout()
     plt.savefig('../images/feature_importance_gb.png')
 
-    fig, ax = plt.subplots(figsize=(28, 15))
+    fig, ax = plt.subplots(figsize=(30, 15))
     plot_partial_dependence(gradBoost, final_set, 
                             features[:number_features], 
                             line_kw={"c": "cornflowerblue"},
