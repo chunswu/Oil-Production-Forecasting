@@ -159,9 +159,9 @@ if __name__ == '__main__':
     with open('../model/rf_data.pkl', 'wb') as data_file:
         pickle.dump(final_set, data_file)
 
-    # fluid_data = clean_data(fluid_data)
-    # final_set = finished_form(fluid_data, parameter_data)
-    # eda_report = ProfileReport(final_set)
-    # eda_report.to_file(output_file='../html/clean_report.html')
-    # final_data = fluid_data.join(parameter_data, ['api'], 'left_outer')
+    fluid_data = clean_data(fluid_data)
+    final_set = finished_form(fluid_data, parameter_data)
+    eda_report = ProfileReport(final_set)
+    eda_report.to_file(output_file='../html/clean_report.html')
+    final_data = fluid_data.join(parameter_data, ['api'], 'left_outer')
 
