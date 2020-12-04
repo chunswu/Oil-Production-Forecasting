@@ -144,8 +144,8 @@ if __name__ == '__main__':
     with open('../model/grad_boost.pkl', 'wb') as gb_file:
         pickle.dump(gradBoost, gb_file)
     
-    # for i in range(20):
-    #     optimizer()
+    for i in range(20):
+        optimizer()
 
     '''
     The best score across ALL searched params:
