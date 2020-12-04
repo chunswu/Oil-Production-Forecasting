@@ -47,7 +47,7 @@ Used Random Forest and Gradient Boost, both methods are ensemble methods where w
 </div>
 
 
-These plots allowed a starting point to determine other hyper-parameters to use. A RandomizedCV search was train on different options and was loop through a few times to get different combinations. The results are as follows:
+These plots allowed a starting point to determine other hyper-parameters to use. A RandomizedSearchCV search was train on different options and was loop through a few times to get different combinations. The results are as follows:
 <br><br>
 
 
