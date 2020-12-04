@@ -91,7 +91,7 @@ As total proppant increases, we would expect a higher production. For fluid syst
 
 
 ## Future Work
-Due to the prediction being off 12,000 barrels or off about $550,000, possibly look into a neural network for prediction.
+Due to the prediction being off 12,000 barrels or off about $550,000, possibly look into a neural network for prediction. May run analysis again with the next reporting time (365 days) with 180 days as feature.
 
 Still have a lot of data that is not in the public domain which may influence production. Due to the proppant breakdown in the dataset not recorded in a standard; a possible manual clean up on the proppant to determine which type influences production (sizes, white, local, ceramic, resin coated, self-suspending proppant …)
 
