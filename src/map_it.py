@@ -24,6 +24,7 @@ def make_map(string_label, pd_df):
                             hover_name="api", 
                             hover_data=["Latitude", "Longitude"],
                             color=value,
+                            color_continuous_scale='turbo',
                             zoom=7,
                             labels={value:'Barrels of Oil at ' + day_str + ' Days'})
     fig.update_layout(mapbox_style="open-street-map",
