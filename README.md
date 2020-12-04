@@ -96,5 +96,6 @@ Due to the prediction being off 12,000 barrels or off about $550,000, possibly l
 Still have a lot of data that is not in the public domain which may influence production. Due to the proppant breakdown in the dataset not recorded in a standard; a possible manual clean up on the proppant to determine which type influences production (sizes, white, local, ceramic, resin coated, self-suspending proppant …)
 
 <br><br><br>
+
 ## Credits
 * https://www.niobraranews.net/
