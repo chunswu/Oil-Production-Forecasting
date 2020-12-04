@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.inspection import plot_partial_dependence    
 
-plt.rcParams.update({'font.size': 18})
+plt.rcParams.update({'font.size': 28})
 
 if __name__ == '__main__':
 
@@ -53,12 +53,12 @@ if __name__ == '__main__':
     fig.tight_layout()
     plt.savefig('../images/feature_importance_gb.png')
 
-    fig, ax = plt.subplots(figsize=(28, 10))
+    fig, ax = plt.subplots(figsize=(28, 15))
     plot_partial_dependence(gradBoost, final_set, 
                             features[:number_features], 
                             line_kw={"c": "cornflowerblue"},
                             ax=ax)
-    ax.set_title("Partial Dependence - Gradient Boost", fontsize=34)
+    ax.set_title("Partial Dependence - Gradient Boost", fontsize=46)
     fig.tight_layout()
     plt.savefig('../images/partial_dependance_gb.png')
 
