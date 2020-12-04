@@ -60,6 +60,6 @@ if __name__ == '__main__':
                             features[:number_features], 
                             line_kw={"c": "seagreen"},
                             ax=ax)
-    ax.set_title("Partial Dependence - Random Forest", fontsize=34)
+    ax.set_title("Partial Dependence - Random Forest", fontsize=46)
     fig.tight_layout()
     plt.savefig('../images/partial_dependance_rf.png')
