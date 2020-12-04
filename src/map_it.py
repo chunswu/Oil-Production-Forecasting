@@ -25,9 +25,9 @@ def make_map(string_label, pd_df):
                             hover_data=["Latitude", "Longitude"],
                             color=value,
                             color_continuous_scale='turbo',
-                            zoom=7,
+                            zoom=8,
                             labels={value:'Barrels of Oil at ' + day_str + ' Days'})
-    fig.update_layout(mapbox_style="open-street-map",
+    fig.update_layout(mapbox_style='carto-positron',
                     margin={"r":0,"t":0,"l":0,"b":0}
                     )
     fig.write_html(save_str)
