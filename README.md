@@ -68,7 +68,11 @@ These plots allowed a starting point to determine other hyper-parameters to use.
 | Model Train Score   | 0.9689        | 0.9316         |
 | Model Test Score    | 0.7644        | 0.7503         |
 | Model Predict Error | 12220.79      | 12582.48       |
+
+
+
 <br><br>
+
 The Random Forest model seems to be overfitting  on the training data, due to the high accuracy of training score and the lower test score. Gradient Boost results leans to not overfit due to the smaller difference between training score and test score. 
 
 Now the last question is 'which features did the models find important?' To answer this question, we generated feature plots and partial dependency plots where generated. Both models picked the same top 5 features which would influence oil production.
