@@ -15,12 +15,11 @@ def make_map(string_label, pd_df):
     -------
     None
     '''
-
-    maps_df.dropna(subset=[value], inplace=True)
-    day_str = value.replace('day', '')
+    # maps_df.dropna(subset=[value], inplace=True)
+    day_str = string_label.replace('day', '')
     save_str = '../html/map_' + day_str + '.html'
 
-    fig = px.scatter_mapbox(maps_df, lat="Latitude", lon="Longitude",
+    fig = px.scatter_mapbox(pd_df, lat="Latitude", lon="Longitude",
                             hover_name="api", 
                             hover_data=["Latitude", "Longitude"],
                             color=value,
@@ -68,11 +67,12 @@ if __name__ == '__main__':
                         FROM data
                         """)
 
-
     prod_lst = ['day180', 'day365', 'day545', 'day730', 'day1095', 'day1460', 'day1825']
 
     maps_df = coorid_df.toPandas()
 
     for value in prod_lst:
         maps_df.dropna(subset=[value], inplace=True)
+        # coorid_df = coorid_df.na.drop(subset=[value])
         make_map(value, maps_df)
+        # make_map(value, coorid_df)
