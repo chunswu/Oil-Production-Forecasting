@@ -47,7 +47,6 @@ def fill_fluid_na(df):
     for i in range(1,6):
         df = df.na.fill({'fluid_type'+str(i): ''})
         df = df.na.fill({'FluidVol'+str(i): 0})
-    
     return df
 
 def clean_fluid_type(df, fluid_sys):
@@ -73,5 +72,7 @@ def clean_fluid_type(df, fluid_sys):
     for i in range(low, high):
         df = df.withColumn(fluid_sys.lower()+str(i), when(col(fluid_type+str(i)) == fluid_sys, col(fluid_vol+str(i))).otherwise(0))
         df = df.withColumn(lowcase_fluid, col(lowcase_fluid) + col(fluid_sys.lower()+str(i)))
-
     return df
+
+if __name__ == '__main__':
+    pass
