@@ -55,7 +55,7 @@ def find_estimators_gradboost():
     line_plot(ax, plants, model_test_lst, 'royalblue', 'model test score')
     ax.set_title('Gradient Boost Model Accuracy', fontsize=34)
     ax.set_xlabel('Number of Estimators', fontsize=24)
-    ax.set_ylabel('Accuracy (%)', fontsize=24)
+    ax.set_ylabel('Root Mean Square Error (%)', fontsize=24)
     ax.legend(loc='lower right', fontsize=20)
     plt.savefig('../images/model_test_gb.png')
 
@@ -105,7 +105,7 @@ def optimizer():
 
 if __name__ == '__main__':
 
-    final_set = pd.read_pickle('../model/rf_data.pkl')
+    final_set = pd.read_pickle('../model/data.pkl')
 
     y = final_set.pop('day180').values
     X = final_set.values
