@@ -4,8 +4,8 @@ from pyspark.sql.types import *
 from pyspark.sql.functions import struct, col, when, lit
 from pyspark.sql import functions as f
 from pandas_profiling import ProfileReport
-import pandas as pd
-import pickle
+# import pandas as pd
+# import pickle
 
 def clean_data(data):
     '''Cleans the fluid types from a spark DataFrame
@@ -134,7 +134,8 @@ if __name__ == '__main__':
                             LateralLength,
                             Azimuth,
                             TotalProppant AS Proppant,
-                            Prod180DayOil AS day180
+                            Prod180DayOil AS day180,
+                            Prod365DayOil AS day365
                         FROM data
                         """)
 
@@ -165,7 +166,8 @@ if __name__ == '__main__':
     order_columns = ['api', 'Latitude', 'Longitude', 
                      'LateralLength', 'Azimuth', 'Proppant',
                      'NIOBRARA', 'CODELL', 'COLORADO', 
-                     'Hybrid', 'Slickwater', 'Gel', 'day180']
+                     'Hybrid', 'Slickwater', 'Gel', 
+                     'day180', 'day365']
     final_set = final_set.select(order_columns)
     # final_set = final_set.set_index('api')
     # final_set.rename(columns={'TotalProppant': 'Total Proppant'}, inplace=True)
