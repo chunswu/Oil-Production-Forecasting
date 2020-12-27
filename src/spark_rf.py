@@ -73,35 +73,49 @@ if __name__ == '__main__':
     sc = spark.sparkContext
     df = spark.read.parquet('../model/data.parquet')
     # print('TYPE: ', type(df))
-    # df.show()
+    df.show()
     transformed= transData(df)
-    transformed.show(5)
+    # transformed.show(5)
 
-    featureIndexer = VectorIndexer(inputCol="features", \
-                               outputCol="indexedFeatures",\
-                               maxCategories=4).fit(transformed)
+    featureIndexer = VectorIndexer(inputCol="features", 
+                                   outputCol="indexedFeatures",
+                                   maxCategories=4).fit(transformed)
 
-    data = featureIndexer.transform(transformed)
-    data.show(5, True)
+    data = featureIndexer.transform(transformed) 
+    # data.show(5, True)
 
     (train_data, test_data) = data.randomSplit([0.7, 0.3], seed=88)    
-    print('*********************** TRAIN DATA ***********************')
-    train_data.show(5)
-    print('*********************** TEST DATA ***********************')
-    test_data.show(5)
-
-    rf = RandomForestRegressor() # featuresCol="indexedFeatures",numTrees=2, maxDepth=2, seed=42
-
+    # print('*********************** TRAIN DATA ***********************')
+    # train_data.show(5)
+    # print('*********************** TEST DATA ***********************')
+    # test_data.show(5)
+    # r2_lst = []
+    # strategy = ['auto', 'onethird', 'sqrt', 'log2']
+    # for tree in range(13, 30, 1):
+    rf = RandomForestRegressor(featuresCol='features',
+                            labelCol='label',
+                            numTrees=150, 
+                            maxDepth=12,
+                            maxBins=25,
+                            featureSubsetStrategy='auto', 
+                            seed=88)
+    # numTrees=150
+    # maxDepth=12
+    # maxBins=25
+    # featuresSubsetStrategy='auto'
+    # r2_score = 0.953
+    # rmse 8471.48
     pipeline = Pipeline(stages=[featureIndexer, rf])
     model = pipeline.fit(train_data)
 
     predictions = model.transform(test_data)
 
     # Select example rows to display.
-    predictions.select("features","label", "prediction").show(5)
+    predictions.select("features","label", "prediction").show(20)
 
-    evaluator = RegressionEvaluator(
-    labelCol="label", predictionCol="prediction", metricName="rmse")
+    evaluator = RegressionEvaluator(labelCol="label", 
+                                    predictionCol="prediction", 
+                                    metricName="rmse")
     rmse = evaluator.evaluate(predictions)
     print("Root Mean Squared Error (RMSE) on test data = %g" % rmse)
 
@@ -109,8 +123,14 @@ if __name__ == '__main__':
     y_true = predictions.select("label").toPandas()
     y_pred = predictions.select("prediction").toPandas()
     r2_score = sklearn.metrics.r2_score(y_true, y_pred)
+    # r2_lst.append([tree, r2_score, rmse])
     print('r2_score: {:4.3f}'.format(r2_score))
 
     model.stages[-1].featureImportances
 
     model.stages[-1].trees
+
+    # print(r2_lst)
+
+    rfModel = model.stages[1]
+    print(rfModel)  # summary only
