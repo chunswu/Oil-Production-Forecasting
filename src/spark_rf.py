@@ -93,12 +93,12 @@ if __name__ == '__main__':
     # strategy = ['auto', 'onethird', 'sqrt', 'log2']
     # for tree in range(13, 30, 1):
     rf = RandomForestRegressor(featuresCol='features',
-                            labelCol='label',
-                            numTrees=150, 
-                            maxDepth=12,
-                            maxBins=25,
-                            featureSubsetStrategy='auto', 
-                            seed=88)
+                               labelCol='label',
+                               numTrees=150, 
+                               maxDepth=12,
+                               maxBins=25,
+                               featureSubsetStrategy='auto', 
+                               seed=88)
     # numTrees=150
     # maxDepth=12
     # maxBins=25
