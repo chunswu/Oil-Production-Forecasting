@@ -69,7 +69,7 @@ def transData(data):
 if __name__ == '__main__':
     spark = (ps.sql.SparkSession.builder 
         .master('local[4]') 
-        .appName('sparkSQL exercise') 
+        .appName('spark gradientboost') 
         .getOrCreate()
         )
     sc = spark.sparkContext
