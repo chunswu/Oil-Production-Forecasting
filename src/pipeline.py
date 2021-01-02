@@ -96,7 +96,7 @@ def column_expand(data, old_column, new_column):
 if __name__ == '__main__':
     spark = (ps.sql.SparkSession.builder 
         .master("local[4]") 
-        .appName("sparkSQL exercise") 
+        .appName("pipeline") 
         .getOrCreate()
         )
     sc = spark.sparkContext
