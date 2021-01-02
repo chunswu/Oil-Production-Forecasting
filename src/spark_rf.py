@@ -6,7 +6,7 @@ from pyspark.sql import Row
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import VectorIndexer
 from pyspark.ml.regression import RandomForestRegressor
-from pyspark.ml.evaluation import RegressionEvaluator
+ 
 import sklearn.metrics
 
 def get_dummy(df,indexCol,categoricalCols,continuousCols,labelCol,dropLast=False):
@@ -67,7 +67,7 @@ def transData(data):
 if __name__ == '__main__':
     spark = (ps.sql.SparkSession.builder 
         .master("local[4]") 
-        .appName("sparkSQL exercise") 
+        .appName("spark randomforest") 
         .getOrCreate()
         )
     sc = spark.sparkContext
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     predictions = model.transform(test_data)
 
     # Select example rows to display.
-    predictions.select("features","label", "prediction").show(20)
+    predictions.select("features","label", "prediction").show(20, False)
 
     evaluator = RegressionEvaluator(labelCol="label", 
                                     predictionCol="prediction", 
