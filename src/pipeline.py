@@ -4,8 +4,11 @@ from pyspark.sql.types import *
 from pyspark.sql.functions import struct, col, when, lit
 from pyspark.sql import functions as f
 from pandas_profiling import ProfileReport
-# import pandas as pd
-# import pickle
+import pandas as pd
+import pickle
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+
 
 def clean_data(data):
     '''Cleans the fluid types from a spark DataFrame
@@ -134,7 +137,6 @@ if __name__ == '__main__':
                             LateralLength,
                             Azimuth,
                             TotalProppant AS Proppant,
-                            Prod180DayOil AS day180,
                             Prod365DayOil AS day365
                         FROM data
                         """)
@@ -167,19 +169,28 @@ if __name__ == '__main__':
                      'LateralLength', 'Azimuth', 'Proppant',
                      'NIOBRARA', 'CODELL', 'COLORADO', 
                      'Hybrid', 'Slickwater', 'Gel', 
-                     'day180', 'day365']
+                     'day365']
+                     #, 'day180']
     final_set = final_set.select(order_columns)
     # final_set = final_set.set_index('api')
     # final_set.rename(columns={'TotalProppant': 'Total Proppant'}, inplace=True)
     # print(type(final_set))
     final_set.show()
-    final_set.write.parquet("../model/data.parquet")
+    final_pd = final_set.toPandas()
+    # final_pd.to_csv('../model/data.csv', sep='\t', encoding='utf-8')
     # with open('../model/data.pkl', 'wb') as data_file:
-    #     pickle.dump(final_set, data_file)
+    #     pickle.dump(final_pd, data_file)
+
+    # final_set.write.parquet("../model/data.parquet")
+    # df.write.csv('../model/data_tensor.csv')
+    
 
     # fluid_data = clean_data(fluid_data)
-    # final_set = finished_form(fluid_data, parameter_data)
+    final_set = finished_form(fluid_data, parameter_data)
+    final_set = final_set.toPandas()
     # eda_report = ProfileReport(final_set)
     # eda_report.to_file(output_file='../html/clean_report.html')
     # final_data = fluid_data.join(parameter_data, ['api'], 'left_outer')
+    final_set.plot.hist(bins=20)
+    plt.show()
 
