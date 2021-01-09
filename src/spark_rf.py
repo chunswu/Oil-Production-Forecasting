@@ -6,7 +6,7 @@ from pyspark.sql import Row
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import VectorIndexer
 from pyspark.ml.regression import RandomForestRegressor
- 
+from pyspark.ml.evaluation import RegressionEvaluator
 import sklearn.metrics
 
 def get_dummy(df,indexCol,categoricalCols,continuousCols,labelCol,dropLast=False):
@@ -24,16 +24,16 @@ def get_dummy(df,indexCol,categoricalCols,continuousCols,labelCol,dropLast=False
     -------
     features matrix
     '''
-    indexers = [StringIndexer(inputCol=c, outputCol="{0}_indexed".format(c))
+    indexers = [StringIndexer(inputCol=c, outputCol='{0}_indexed'.format(c))
                  for c in categoricalCols]
 
     # default setting: dropLast=True
     encoders = [OneHotEncoder(inputCol=indexer.getOutputCol(),
-                outputCol="{0}_encoded".format(indexer.getOutputCol()),dropLast=dropLast)
+                outputCol='{0}_encoded'.format(indexer.getOutputCol()),dropLast=dropLast)
                 for indexer in indexers]
 
     assembler = VectorAssembler(inputCols=[encoder.getOutputCol() for encoder in encoders]
-                                + continuousCols, outputCol="features")
+                                + continuousCols, outputCol='features')
 
     pipeline = Pipeline(stages=indexers + encoders + [assembler])
 
@@ -57,17 +57,17 @@ def get_dummy(df,indexCol,categoricalCols,continuousCols,labelCol,dropLast=False
 
 # convert the data to dense vector
 #def transData(row):
-#    return Row(label=row["Sales"],
-#               features=Vectors.dense([row["TV"],
-#                                       row["Radio"],
-#                                       row["Newspaper"]]))
+#    return Row(label=row['Sales'],
+#               features=Vectors.dense([row['TV'],
+#                                       row['Radio'],
+#                                       row['Newspaper']]))
 def transData(data):
     return data.rdd.map(lambda r: [Vectors.dense(r[:-1]),r[-1]]).toDF(['features','label'])
 
 if __name__ == '__main__':
     spark = (ps.sql.SparkSession.builder 
-        .master("local[4]") 
-        .appName("spark randomforest") 
+        .master('local[4]') 
+        .appName('spark randomforest') 
         .getOrCreate()
         )
     sc = spark.sparkContext
@@ -77,8 +77,8 @@ if __name__ == '__main__':
     transformed= transData(df)
     # transformed.show(5)
 
-    featureIndexer = VectorIndexer(inputCol="features", 
-                                   outputCol="indexedFeatures",
+    featureIndexer = VectorIndexer(inputCol='features', 
+                                   outputCol='indexedFeatures',
                                    maxCategories=4).fit(transformed)
 
     data = featureIndexer.transform(transformed) 
@@ -107,26 +107,27 @@ if __name__ == '__main__':
     # rmse 8471.48
     pipeline = Pipeline(stages=[featureIndexer, rf])
     model = pipeline.fit(train_data)
+    # model = rf.fit(train_data)
 
     predictions = model.transform(test_data)
 
     # Select example rows to display.
-    predictions.select("features","label", "prediction").show(20, False)
+    predictions.select('features', 'label', 'prediction').show(20, False)
 
-    evaluator = RegressionEvaluator(labelCol="label", 
-                                    predictionCol="prediction", 
-                                    metricName="rmse")
+    evaluator = RegressionEvaluator(labelCol='label', 
+                                    predictionCol='prediction', 
+                                    metricName='rmse')
     rmse = evaluator.evaluate(predictions)
-    print("Root Mean Squared Error (RMSE) on test data = %g" % rmse)
+    print('Root Mean Squared Error (RMSE) on test data = %g' % rmse)
 
     
-    y_true = predictions.select("label").toPandas()
-    y_pred = predictions.select("prediction").toPandas()
+    y_true = predictions.select('label').toPandas()
+    y_pred = predictions.select('prediction').toPandas()
     r2_score = sklearn.metrics.r2_score(y_true, y_pred)
     # r2_lst.append([tree, r2_score, rmse])
     print('r2_score: {:4.3f}'.format(r2_score))
 
-    model.stages[-1].featureImportances
+    print('FEATURES IMPORTANCES: ', model.stages[-1].featureImportances)
 
     model.stages[-1].trees
 
@@ -134,3 +135,4 @@ if __name__ == '__main__':
 
     rfModel = model.stages[1]
     print(rfModel)  # summary only
+    # print('FEATURES IMPORTANCES: ', model.featureImportances)
