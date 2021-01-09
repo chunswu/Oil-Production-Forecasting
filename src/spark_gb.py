@@ -123,7 +123,7 @@ if __name__ == '__main__':
     # r2_lst.append([tree, r2_score, rmse])
     print('r2_score: {:4.3f}'.format(r2_score))
 
-    model.stages[-1].featureImportances
+    print('FEATURES IMPORTANCES: ', model.stages[-1].featureImportances)
 
     model.stages[-1].trees
 
