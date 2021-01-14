@@ -4,98 +4,94 @@
 
 ## Background and Motivation
 
-Every operator in the Oil and Gas industry invests millions of dollars to create oil wells in unconventional oil formations (shale). Some operators do not emphasize in data collection, data analysis or data mining public data, due to the financial investment in oil wells being able to predict production would help many operators budget or decide to pursue projects or find new areas to expand. From my experience working in the industry, I believe they're multiple parameters that would influence oil production, the goal of the project is to predict the production of oil wells at 180 days (State mandatory report).
-
-* <b>Formation</b>
-    * Certain formations out produce others in the same basin
-* Fluid System
-    * <b>Slickwater</b>
-        * Complex fractures
-    * <b>Hybrid</b>
-        * Mix of complex and simple fractures
-    * <b>Gel</b>
-        * Simple fractures
-* Location - <b>Latitude & Longitude</b>
-    * Most basins have a sweet spot where oil production is the best
-* <b>Total Proppant</b>
-    * Amount of proppant (sand) used during hydraulic fracturing
-
+Every operator in the Oil and Gas industry invests millions of dollars to create oil wells in unconventional oil formations (shale). Some operators do not emphasize in data collection, data analysis or data mining public data, due to the financial investment in oil wells being able to predict production would help many operators budget or decide to pursue projects or find new areas to expand. From my experience working in the industry, I believe they're multiple parameters that would influence oil production, the goal of the project is to predict the production of oil wells at 365 days (State mandatory report).
 
 
 ## Data & EDA
 
-Was able to obtain a redacted data of unconventional oil wells in the Denver-Julesburg Basin. The data had over 200 columns and over 9,000 rows, but only a few columns would influence the production of oil. Organize fluid volumes into the three fluid types used for hydraulic fracturing. Ploted the median production at every mandatory reporting times and found that one formation will produce more oil in the long term.
-<div align="center"><img src="images/production_formation.png"></div>
+Was able to obtain a redacted data of unconventional oil wells in the Denver-Julesburg Basin. The data had over 200 columns and over 9,000 rows, but only a few columns would influence the production of oil. Explored the 365 day production, fluid type, lateral length, azimuth, and proppant for the dataset.
+<br><br><br><br>
 
-Found 12 wells that are not in the two most targeted formations, so those 12 wells were removed from the data set. On 180-day production mark the data has 502 wells that have not been recorded as of this time.
+<div align="center"><img src="images/README_365dayEDA.png"></div>
+Most wells in the dataset would produce ~50,000 barrels in the 365 day time frame.
+<br><br><br><br>
 
-<div align="center"><img src="images/correlation_plot.png" height=604 width=766></div>
+<div align="center"><img src="images/README_fluidEDA.png"></div>
+The fluid types in the dataset without any adjustments or changes, was quite disorganized. This seems to be a good feature to apply feature engineering. The fluids types was in 5 columns along with an additional 5 columns of volumes. Through previous analysis, fluid types influence production and fluid types is a big factor in fracture geometry which lead to production. Was able to feature engineer out 3 fluid types: Slickwater, Gel, and Hybrid.
+<br><br><br><br>
 
-Using the Pearson’s R correlations plot, there is no correlation for location (latitude and longitude) which is quite odd due to common sense; we know oil isn’t everywhere and oil is only at certain locations in the world.
+<div align="center"><img src="images/README_proppantEDA.png"></div>
+A majority of wells in the DJ Basin use about 5 million pounds of proppant for the hydraulic fracture design.
+<br><br><br><br>
 
-<div align="center"><img src="images/map_180.png" height=574 width=810></div>
-Due to the Denver-Julesburg Basin expanding across a few states, I decided to include the wells in Wyoming to have more data.
+
+<div align="center"><img src="images/README_lateralEDA.png"></div>
+Most lateral lengths are around 4,000 feet; however, 7,000 feet and 9,000 feet seems to be trending.
+<br><br><br><br>
+
+
+<div align="center"><img src="images/README_azimuthEDA.png"></div>
+Most of the wells in the dataset are using 0 and 180 degrees but some are at 90 and 270 degrees. Due to geology and natural fracture of shale, the azimuth angle may influence production.
+<br><br><br><br>
+
+
+<div align="center"><img src="images/map_365.png" width=810 height=574></div>
+Due to the Denver-Julesburg Basin expanding across a few states, Wyoming wells were not removed to have more data.
 
 <br><br>
-## Random Forest & Gradient Boost
-Used Random Forest and Gradient Boost, both methods are ensemble methods where weak learning decision trees are used to create a strong learner. First step was to determine the amount of decision trees to use before diminishing returns occur, so a plot was generated with changing number of trees used.
+## The Models
+Explored 3 different models, Random Forest, Gradient Boost and Multi Layer Perceptron (MLP). The performance of the models out of the box had a fairly high Root Mean Square Error (RMSE). Random Forest started at a RMSE of 25,800 barrels, Gradient Boost started at 24,000 barrels and MLP started at 36,500 barrels. After some tuning on the models, Random Forest ended at 20,300, Gradient Boost ended at 20,500 and MLP ended at 25,400. 
 <div align="center">
-<img src="images/model_test_rf.png" height=360 width=720>
-<img src="images/model_predict_rf.png" height=360 width=720>
-<img src="images/model_test_gb.png" height=360 width=720>
-<img src="images/model_predict_gb.png" height=360 width=720>
+<img src="images/rmse.png">
 </div>
 
 
-These plots allowed a starting point to determine other hyper-parameters to use. A RandomizedSearchCV search was train on different options and was loop through a few times to get different combinations. The results are as follows:
-<br><br>
-
-
-### Hyper-Parmeters
-| Random Forest |       | Gradient Boost  |       |
-|---------------|-------|-----------------|-------|
-| bootstrap     | False | learning_rate   | 0.024 |
-| max_depth     | 41    | max_depth       | 9     |
-| max_features  | 3     | max_features    | 7     |
-| n_estimators  | 309   | min_sample_leaf | 11    |
-|               |       | n_estimators    | 1156  |
-|               |       | subsample       | 0.69  |
-
+### Hyper-Parmeters Tuned
+| Spark Random Forest   |      | Spark GradientBoost   |      | Keras MLP          |               |
+|-----------------------|------|-----------------------|------|--------------------|---------------|
+| numTrees              | 150  | maxIter               | 150  | activation         | relu          |
+| maxDepth              | 12   | maxDepth              | 5    | optimizer          | adam          |
+| maxBins               | 25   | maxBins               | 95   | learning_rate      | 0.0005        |
+| featureSubsetStrategy | auto | featureSubsetStrategy | auto | kernel_initializer | GlorotUniform |
+|                       |      | stepSize              | 0.05 | Architecture       |               |
 
 <br><br>
 
 
-### Results of Hyper-Parmeter Tuning
 
-|                     | Random Forest | Gradient Boost |
-|---------------------|---------------|----------------|
-| Model Train Score   | 0.9689        | 0.9316         |
-| Model Test Score    | 0.7644        | 0.7503         |
-| Model Predict Error | 12220.79      | 12582.48       |
+<div align="center"><img src="images/feature_importance_rf.png"></div>
+The top 2 features for the Random Forest is Lateral Length and Proppant. It also classified Slickwater which was obtain through feature engineering. 
+<br><br><br><br>
+<div align="center"><img src="images/feature_importance_gb.png"></div>
+The top 2 features for Gradient Boost is Latitude and Longitude. It also classified Slickwater in the 6th important feature, again a feature obtained through feature engineering.
 
+<br><br><br><br>
 
-
-<br><br>
-
-The Random Forest model seems to be overfitting  on the training data, due to the high accuracy of training score and the lower test score. Gradient Boost results leans to not overfit due to the smaller difference between training score and test score. 
-
-Now the last question is 'which features did the models find important?' To answer this question, we generated feature plots and partial dependency plots. Both models picked the same top 5 features which would influence oil production.
+The following partial dependance plots were generated using sklearn library, due to time constraints coding from scratch a partial dependance for Spark MLlib wasn’t possible. 
 <div align="center">
-<img src="images/feature_importance_rf.png" height=400 width=800>
-<img src="images/feature_importance_gb.png" height=400 width=800>
-<img src="images/partial_dependance_rf.png">
-<img src="images/partial_dependance_gb.png">
+<img src="images/partial_dependance_rf_sk.png">
+<img src="images/partial_dependance_gb_sk.png">
 </div>
 
-As total proppant increases, we would expect a higher production. For fluid systems a slickwater has the best trend for higher production. Hybrid seems to be flat until a certain amount then will trend for higher production but not as much of a trend like slickwater. Latitude and longitude does not show an overall trend and it increases but it shows which locations would produce better than others.
+Both models indicates that increasing Lateral Length, Proppant, and Slickwater volume would result in a higher production. The Azimuth angle didn't indicate any change in production from 0, 90, 180, 270 degrees. The Latitude and Longitude shows the areas which oil wells would most likely produce more or less. 
+
+<br><br><br>
+
+## Conclustion
+A Random Forest model will work well for areas where an operator already established. Since the top 2 features is Lateral Length and Proppant, which are well design and hydraulic fracture design parameters.
+
+A Gradient Boost model will work well in areas where an operator isn't established or new areas to explore. Since the top 2 features is Latitude and Longitude, which are location parameters. 
+
+Slickwater, which was a engineered feature shows up on both models as an influencing feature for oil production. This feature was not obvious in the fluid data in the original dataset.
 
 
 ## Future Work
-Due to the prediction being off 12,000 barrels or off about $550,000, possibly look into a neural network for prediction. May run analysis again with the next reporting time (365 days) with 180 days as feature.
-
-Still have a lot of data that is not in the public domain which may influence production. Due to the proppant breakdown in the dataset not recorded in a standard; a possible manual clean up on the proppant to determine which type influences production (sizes, white, local, ceramic, resin coated, self-suspending proppant …)
+Collect more data to have more wells at 365 days to help the models train. Adjust MLP parameters to lower RMSE and to create permutation importance. Apply proprietary data into the dataset to see if influences oil production. Apply the model to other basins. Flask app on AWS for users to input parameters and get an output of 365 day prediction.
 
 <br><br><br>
 
 ## Credits
 * https://www.niobraranews.net/
+
+
+
