@@ -93,7 +93,7 @@ def find_estimators():
     ax.set_xlabel('Number of Estimators', fontsize=24)
     ax.set_ylabel('Root Mean Square Error (%)', fontsize=24)
     ax.legend(loc='lower right', fontsize=20)
-    plt.savefig('../images/model_test_rf.png')
+    plt.savefig('../../images/model_test_rf.png')
 
     fig, ax = plt.subplots(figsize = (12, 6))
     line_plot(ax, plants, model_predict_lst, 'forestgreen', 'model predict score')
@@ -101,21 +101,24 @@ def find_estimators():
     ax.set_xlabel('Number of Estimators', fontsize=24)
     ax.set_ylabel('Root Mean Square Error (In Barrels)', fontsize=24)
     ax.legend(loc='upper right', fontsize=20)
-    plt.savefig('../images/model_predict_rf.png')
+    plt.savefig('../../images/model_predict_rf.png')
 
 if __name__ == '__main__':
 
-    final_set = pd.read_pickle('../model/rf_data.pkl')
-
-    y = final_set.pop('day180').values
+    final_set = pd.read_pickle('../../model/data.pkl')
+    final_set = final_set.drop('api', axis=1)
+    y = final_set.pop('day365').values
     X = final_set.values
 
     X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                         test_size = 0.2,
                                                         random_state = 1)
     
-    randomForest = RandomForestRegressor(n_estimators=350,
+    randomForest = RandomForestRegressor(n_estimators=309,
                                          n_jobs=-1,
+                                         bootstrap=False,
+                                         max_depth=41,
+                                         max_features=3,
                                          random_state=1)
 
     randomForest.fit(X_train, y_train)
@@ -134,7 +137,7 @@ if __name__ == '__main__':
     '''
     find_estimators()
 
-    with open('../model/random_forest.pkl', 'wb') as rf_file:
+    with open('../../model/random_forest.pkl', 'wb') as rf_file:
         pickle.dump(randomForest, rf_file)
     
     for i in range(10):

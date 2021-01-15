@@ -15,15 +15,15 @@ plt.rcParams.update({'font.size': 28})
 
 if __name__ == '__main__':
 
-    randomForest = pickle.load(open('../model/random_forest.pkl', 'rb'))
-    final_set = pd.read_pickle('../model/rf_data.pkl')
+    randomForest = pickle.load(open('../../model/random_forest.pkl', 'rb'))
+    final_set = pd.read_pickle('../../model/rf_data.pkl')
 
     print('\n DATA COLUMN: ', list(final_set.columns))
     feature_importances = np.argsort(randomForest.feature_importances_)
     print('FULL FEATURE IMPORTANCES: ', feature_importances)
-    print("Top Five:", list(final_set.columns[feature_importances[-1:-6:-1]]))
+    print("Top Six:", list(final_set.columns[feature_importances[-1:-7:-1]]))
 
-    number_features = 5
+    number_features = 6
     importances = np.argsort(randomForest.feature_importances_)
     importance_rank = randomForest.feature_importances_
     print('\n SECOND TIME FOR IMPORTANCES: ', importances)
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     ax.set_xlabel("Features", fontsize=22)
     ax.set_title("Feature Importances - Random Forest", fontsize=24)
     fig.tight_layout()
-    plt.savefig('../images/feature_importance_rf.png')
+    plt.savefig('../../images/feature_importance_rf_sk.png')
 
     fig, ax = plt.subplots(figsize=(30, 15))
     plot_partial_dependence(randomForest, final_set, 
@@ -62,4 +62,4 @@ if __name__ == '__main__':
                             ax=ax)
     ax.set_title("Partial Dependence - Random Forest", fontsize=46)
     fig.tight_layout()
-    plt.savefig('../images/partial_dependance_rf.png')
+    plt.savefig('../../images/partial_dependance_rf_sk.png')

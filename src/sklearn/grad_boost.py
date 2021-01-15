@@ -57,7 +57,7 @@ def find_estimators_gradboost():
     ax.set_xlabel('Number of Estimators', fontsize=24)
     ax.set_ylabel('Root Mean Square Error (%)', fontsize=24)
     ax.legend(loc='lower right', fontsize=20)
-    plt.savefig('../images/model_test_gb.png')
+    plt.savefig('../../images/model_test_gb.png')
 
     fig, ax = plt.subplots(figsize = (12, 6))
     line_plot(ax, plants, model_predict_lst, 'dodgerblue', 'model predict score')
@@ -65,7 +65,7 @@ def find_estimators_gradboost():
     ax.set_xlabel('Number of Estimators', fontsize=24)
     ax.set_ylabel('Root Mean Square Error (In Barrels)', fontsize=24)
     ax.legend(loc='upper right', fontsize=20)
-    plt.savefig('../images/model_predict_gb.png')
+    plt.savefig('../../images/model_predict_gb.png')
 
 def optimizer():
     base_model = GradientBoostingRegressor(learning_rate=0.1,
@@ -105,9 +105,10 @@ def optimizer():
 
 if __name__ == '__main__':
 
-    final_set = pd.read_pickle('../model/data.pkl')
+    final_set = pd.read_pickle('../../model/data.pkl')
+    final_set = final_set.drop('api', axis=1)
 
-    y = final_set.pop('day180').values
+    y = final_set.pop('day365').values
     X = final_set.values
 
     X_train, X_test, y_train, y_test = train_test_split(X, y,
