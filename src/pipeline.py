@@ -63,19 +63,12 @@ def finished_form(data1, data2):
     data2 = data2.na.replace({104.8865041: -104.8865041})
     join_data = data1.join(data2, ['api'], 'left_outer')
 
-    join_data = join_data.filter((join_data.formation != 'GREENHORN') & 
-                                 (join_data.formation != 'SUSSEX'))
+    join_data = join_data.filter((join_data.Formation != 'GREENHORN') & 
+                                 (join_data.Formation != 'SUSSEX'))
     join_data = join_data.withColumnRenamed('hybrid_collect', 'Hybrid')
     join_data = join_data.withColumnRenamed('slickwater_collect', 'Slickwater')
     join_data = join_data.withColumnRenamed('gel_collect', 'Gel')
     # join_data.show()
-
-    # data = join_data.toPandas()
-    # data = data[data.formation != 'GREENHORN']
-    # data = data[data.formation != 'SUSSEX']
-    # data = data.rename({'hybrid_collect': 'Hybrid',
-    #                     'slickwater_collect': 'Slickwater', 
-    #                     'gel_collect': 'Gel'}, axis=1)
     return join_data
 
 def column_expand(data, old_column, new_column):
@@ -133,20 +126,13 @@ if __name__ == '__main__':
                             api,
                             Latitude, 
                             Longitude,
-                            UPPER(formation) AS formation,
+                            UPPER(formation) AS Formation,
                             LateralLength,
                             Azimuth,
                             TotalProppant AS Proppant,
                             Prod365DayOil AS day365
                         FROM data
                         """)
-
-                            # Prod365DayOil AS day365,
-                            # Prod545DayOil AS day545,
-                            # Prod730DayOil AS day730,
-                            # Prod1095DayOil AS day1095,
-                            # Prod1460DayOil AS day1460,
-                            # Prod1825DayOil AS day1825,
 
     fluid_data = clean_data(fluid_data)
     final_set = finished_form(fluid_data, parameter_data)
@@ -155,42 +141,43 @@ if __name__ == '__main__':
     state_seperate = ['COLORADO']
 
     for layers in formation_seperate:
-        final_set = column_expand(final_set, 'formation', layers)
+        final_set = column_expand(final_set, 'Formation', layers)
 
     for state in state_seperate:
         final_set = column_expand(final_set, 'State', state)
 
-    columns_to_drop = ['formation', 'State']
+    columns_to_drop = ['Formation', 'State']
     final_set = final_set.drop(*columns_to_drop)
-    # final_set = final_set.drop(columns=['formation'])
-    # final_set = final_set.drop(columns=['State'])
+
     final_set = final_set.dropna()
     order_columns = ['api', 'Latitude', 'Longitude', 
                      'LateralLength', 'Azimuth', 'Proppant',
                      'NIOBRARA', 'CODELL', 'COLORADO', 
                      'Hybrid', 'Slickwater', 'Gel', 
                      'day365']
-                     #, 'day180']
+
     final_set = final_set.select(order_columns)
-    # final_set = final_set.set_index('api')
-    # final_set.rename(columns={'TotalProppant': 'Total Proppant'}, inplace=True)
+    final_set = final_set.toPandas()
+
+    final_set.rename(columns={'TotalProppant': 'Proppant'}, inplace=True)
     # print(type(final_set))
-    final_set.show()
-    final_pd = final_set.toPandas()
+    # final_set.show()
+
+    # write to external file for spark or sklearn
+    # final_pd = final_set.toPandas()
     # final_pd.to_csv('../model/data.csv', sep='\t', encoding='utf-8')
-    # with open('../model/data.pkl', 'wb') as data_file:
-    #     pickle.dump(final_pd, data_file)
+    with open('../model/data.pkl', 'wb') as data_file:
+        pickle.dump(final_set, data_file)
 
     # final_set.write.parquet("../model/data.parquet")
     # df.write.csv('../model/data_tensor.csv')
     
-
+    # Create EDA report - HTML file
     # fluid_data = clean_data(fluid_data)
-    final_set = finished_form(fluid_data, parameter_data)
-    final_set = final_set.toPandas()
+    # final_set = finished_form(fluid_data, parameter_data)
+    # final_set = final_set.toPandas()
     # eda_report = ProfileReport(final_set)
     # eda_report.to_file(output_file='../html/clean_report.html')
     # final_data = fluid_data.join(parameter_data, ['api'], 'left_outer')
-    final_set.plot.hist(bins=20)
-    plt.show()
+
 
